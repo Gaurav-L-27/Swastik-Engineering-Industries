@@ -1,7 +1,10 @@
+```php
 <?php
 
-header('Content-Type: application/json; charset=UTF-8');
-
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    http_response_code(405);
+    exit("Method Not Allowed");
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -9,87 +12,49 @@ header('Content-Type: application/json; charset=UTF-8');
 |--------------------------------------------------------------------------
 */
 
-$receiverEmail = 'your@email.com';
+$receiver_email = "swastikengindustries@gmail.com";
 
 
 /*
 |--------------------------------------------------------------------------
-| Check request
+| Get form data
 |--------------------------------------------------------------------------
 */
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Invalid request method.'
-    ]);
-
-    exit;
-}
+$name    = trim($_POST["name"] ?? "");
+$email   = trim($_POST["email"] ?? "");
+$phone   = trim($_POST["phone"] ?? "");
+$service = trim($_POST["service"] ?? "");
+$message = trim($_POST["message"] ?? "");
 
 
 /*
 |--------------------------------------------------------------------------
-| Get form values
+| Validate required fields
 |--------------------------------------------------------------------------
 */
 
-$name = trim($_POST['name'] ?? '');
-$email = trim($_POST['email'] ?? '');
-$phone = trim($_POST['phone'] ?? '');
-$service = trim($_POST['service'] ?? '');
-$message = trim($_POST['message'] ?? '');
-
-
-/*
-|--------------------------------------------------------------------------
-| Validate
-|--------------------------------------------------------------------------
-*/
-
-if ($name === '') {
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Please enter your name.'
-    ]);
-
-    exit;
+if (empty($name) || empty($email) || empty($message)) {
+    http_response_code(400);
+    exit("Please fill in all required fields.");
 }
-
-
-if ($email === '') {
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Please enter your email.'
-    ]);
-
-    exit;
-}
-
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Please enter a valid email address.'
-    ]);
-
-    exit;
+    http_response_code(400);
+    exit("Please enter a valid email address.");
 }
 
 
-if ($message === '') {
+/*
+|--------------------------------------------------------------------------
+| Prevent email header injection
+|--------------------------------------------------------------------------
+*/
 
-    echo json_encode([
-        'success' => false,
-        'message' => 'Please enter your project details.'
-    ]);
-
-    exit;
-}
+$name = str_replace(["\r", "\n"], "", $name);
+$email = str_replace(["\r", "\n"], "", $email);
+$phone = str_replace(["\r", "\n"], "", $phone);
+$service = str_replace(["\r", "\n"], "", $service);
 
 
 /*
@@ -98,7 +63,7 @@ if ($message === '') {
 |--------------------------------------------------------------------------
 */
 
-$subject = 'New Quote Request - ' . $name;
+$subject = "New Quote Request - " . $service;
 
 
 /*
@@ -107,11 +72,14 @@ $subject = 'New Quote Request - ' . $name;
 |--------------------------------------------------------------------------
 */
 
-$emailBody = "
-NEW QUOTE REQUEST
-==============================
+$email_body = "
+You have received a new quote request.
 
-Name:
+----------------------------------------
+CUSTOMER INFORMATION
+----------------------------------------
+
+Full Name:
 $name
 
 Email:
@@ -120,68 +88,47 @@ $email
 Phone:
 $phone
 
-Service:
+Service Needed:
 $service
 
-Project Details:
+----------------------------------------
+PROJECT DETAILS
+----------------------------------------
+
 $message
 
-==============================
-Website Quote Form
+----------------------------------------
+This request was submitted from your website.
+----------------------------------------
 ";
 
 
 /*
 |--------------------------------------------------------------------------
-| Headers
+| Email headers
 |--------------------------------------------------------------------------
 */
 
-$headers  = "MIME-Version: 1.0\r\n";
+$headers = "From: Website Quote Form <no-reply@" . $_SERVER["SERVER_NAME"] . ">\r\n";
+$headers .= "Reply-To: " . $email . "\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-/*
- * IMPORTANT:
- * Use an email address from YOUR domain here.
- */
-$headers .= "From: Website <noreply@yourdomain.com>\r\n";
-
-$headers .= "Reply-To: $email\r\n";
-
 
 /*
 |--------------------------------------------------------------------------
-| Send
+| Send email
 |--------------------------------------------------------------------------
 */
 
-$sent = mail(
-    $receiverEmail,
-    $subject,
-    $emailBody,
-    $headers
-);
+if (mail($receiver_email, $subject, $email_body, $headers)) {
 
-
-/*
-|--------------------------------------------------------------------------
-| Response
-|--------------------------------------------------------------------------
-*/
-
-if ($sent) {
-
-    echo json_encode([
-        'success' => true,
-        'message' => 'Email sent successfully.'
-    ]);
+    echo "success";
 
 } else {
 
-    echo json_encode([
-        'success' => false,
-        'message' => 'PHP could not send the email.'
-    ]);
+    http_response_code(500);
+    echo "Unable to send your request. Please try again later.";
 }
 
-exit;
+?>
+```
