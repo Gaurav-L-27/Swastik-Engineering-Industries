@@ -1,4 +1,3 @@
-```php
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -131,4 +130,3 @@ if (mail($receiver_email, $subject, $email_body, $headers)) {
 }
 
 ?>
-```
