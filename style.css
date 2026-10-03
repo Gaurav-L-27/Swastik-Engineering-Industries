@@ -731,6 +731,10 @@ section[id] {
     color: var(--text-muted);
 }
 
+.contact-section {
+    background: var(--bg-elevated);
+}
+
 .contact-grid {
     display: grid;
     grid-template-columns: 5fr 7fr;
@@ -780,12 +784,14 @@ section[id] {
     color: var(--text-muted);
     font-size: 14px;
 }
-
-.contact-items a:hover {
+.contact-items a, .process-step a{
+    transition: all 0.3s ease-in-out;
+}
+.contact-items a:hover, .process-step a:hover {
     color: var(--accent);
 }
 
-#quote-form {
+#form {
     display: grid;
     gap: 20px;
 }
@@ -861,10 +867,10 @@ section[id] {
     justify-content: space-between;
 }
 
-.footer-links{
+.footer-links {
     display: grid;
-        grid-template-columns: repeat(2, auto);
-        gap: 100px;
+    grid-template-columns: repeat(2, auto);
+    gap: 100px;
 }
 
 .footer-brand {
@@ -914,11 +920,13 @@ section[id] {
     color: rgba(245, 245, 245, 0.45);
     font: 12.5px var(--font-mono);
 }
-@media (max-width: 1199px){
+
+@media (max-width: 1199px) {
     .footer-links {
-            gap: 40px;
-        }
+        gap: 40px;
+    }
 }
+
 @media (max-width: 1023px) {
     .desktop-nav {
         display: none;
@@ -1036,9 +1044,9 @@ section[id] {
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 
-        .footer-links{
-            gap: 20px;
-        }
+    .footer-links {
+        gap: 20px;
+    }
 
     .footer-grid p {
         max-width: 100%;
