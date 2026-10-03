@@ -33,7 +33,7 @@ $message = trim($_POST["message"] ?? "");
 |--------------------------------------------------------------------------
 */
 
-if (empty($name) || empty($email) || empty($message)) {
+if ($name === "" || $email === "" || $message === "") {
     http_response_code(400);
     exit("Please fill in all required fields.");
 }
@@ -50,9 +50,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 |--------------------------------------------------------------------------
 */
 
-$name = str_replace(["\r", "\n"], "", $name);
-$email = str_replace(["\r", "\n"], "", $email);
-$phone = str_replace(["\r", "\n"], "", $phone);
+$name    = str_replace(["\r", "\n"], "", $name);
+$email   = str_replace(["\r", "\n"], "", $email);
+$phone   = str_replace(["\r", "\n"], "", $phone);
 $service = str_replace(["\r", "\n"], "", $service);
 
 
@@ -71,45 +71,40 @@ $subject = "New Quote Request - " . $service;
 |--------------------------------------------------------------------------
 */
 
-$email_body = "
-You have received a new quote request.
+$email_body = "You have received a new quote request.\n\n";
 
-----------------------------------------
-CUSTOMER INFORMATION
-----------------------------------------
+$email_body .= "----------------------------------------\n";
+$email_body .= "CUSTOMER INFORMATION\n";
+$email_body .= "----------------------------------------\n\n";
 
-Full Name:
-$name
+$email_body .= "Full Name: " . $name . "\n";
+$email_body .= "Email: " . $email . "\n";
+$email_body .= "Phone: " . ($phone ?: "Not provided") . "\n";
+$email_body .= "Service Needed: " . $service . "\n\n";
 
-Email:
-$email
+$email_body .= "----------------------------------------\n";
+$email_body .= "PROJECT DETAILS\n";
+$email_body .= "----------------------------------------\n\n";
 
-Phone:
-$phone
+$email_body .= $message . "\n\n";
 
-Service Needed:
-$service
-
-----------------------------------------
-PROJECT DETAILS
-----------------------------------------
-
-$message
-
-----------------------------------------
-This request was submitted from your website.
-----------------------------------------
-";
+$email_body .= "----------------------------------------\n";
+$email_body .= "This request was submitted from your website.\n";
+$email_body .= "----------------------------------------\n";
 
 
 /*
 |--------------------------------------------------------------------------
 | Email headers
 |--------------------------------------------------------------------------
+|
+| No domain email is required here.
+| PHP/hosting will determine the sender.
+|
 */
 
-$headers = "From: Website Quote Form <no-reply@" . $_SERVER["SERVER_NAME"] . ">\r\n";
-$headers .= "Reply-To: " . $email . "\r\n";
+$headers  = "Reply-To: " . $email . "\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
 
