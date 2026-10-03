@@ -267,7 +267,7 @@
               </div>
             </div>
           </div>
-          <form id="quote-form" action="send-quote.php" method="POST" data-reveal>
+          <!-- <form id="quote-form" action="send-quote.php" method="POST" data-reveal>
 
             <div class="form-row">
               <div class="field">
@@ -313,7 +313,57 @@
               <p id="form-status" class="form-status" aria-live="polite"></p>
             </div>
 
+          </form> -->
+          <form action="https://formsubmit.co/swastikengindustries@gmail.com" method="POST">
+          
+            <input type="hidden" name="_subject" value="New Quote Request - Swastik Engineering">
+            <input type="hidden" name="_captcha" value="false">
+          
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Full Name</label>
+                <input id="name" name="name" type="text" required autocomplete="name" placeholder="Your name">
+              </div>
+          
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+              </div>
+            </div>
+          
+            <div class="form-row">
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+91 ...">
+              </div>
+          
+              <div class="field">
+                <label for="service">Service Needed</label>
+                <select id="service" name="service">
+                  <option value="Laser Cutting">Laser Cutting</option>
+                  <option value="Edge Banding">Banding</option>
+                  <option value="Both / Full Fabrication">
+                    Both / Full Fabrication
+                  </option>
+                  <option value="Other / Consultation">
+                    Other / Consultation
+                  </option>
+                </select>
+              </div>
+            </div>
+          
+            <div class="field">
+              <label for="message">Project Details</label>
+              <textarea id="message" name="message" rows="6" required
+                placeholder="Material, thickness, quantity, dimensions, files available etc..."></textarea>
+            </div>
+          
+            <button class="button button-accent" type="submit">
+              Send Quote Request
+            </button>
+          
           </form>
+
         </div>
       </div>
     </section>
@@ -347,69 +397,69 @@
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    // document.addEventListener("DOMContentLoaded", function () {
 
-      const form = document.getElementById("quote-form");
-      const status = document.getElementById("form-status");
+    //   const form = document.getElementById("quote-form");
+    //   const status = document.getElementById("form-status");
 
-      if (!form) return;
+    //   if (!form) return;
 
-      form.addEventListener("submit", async function (e) {
+    //   form.addEventListener("submit", async function (e) {
 
-        e.preventDefault();
+    //     e.preventDefault();
 
-        const button = form.querySelector('button[type="submit"]');
-        const originalText = button.innerHTML;
+    //     const button = form.querySelector('button[type="submit"]');
+    //     const originalText = button.innerHTML;
 
-        button.disabled = true;
-        button.innerHTML = "Sending...";
+    //     button.disabled = true;
+    //     button.innerHTML = "Sending...";
 
-        status.textContent = "";
-        status.className = "form-status";
+    //     status.textContent = "";
+    //     status.className = "form-status";
 
-        try {
+    //     try {
 
-          const formData = new FormData(form);
+    //       const formData = new FormData(form);
 
-          const response = await fetch("send-quote.php", {
-            method: "POST",
-            body: formData
-          });
+    //       const response = await fetch("send-quote.php", {
+    //         method: "POST",
+    //         body: formData
+    //       });
 
-          const result = await response.text();
+    //       const result = await response.text();
 
-          if (response.ok && result.trim() === "success") {
+    //       if (response.ok && result.trim() === "success") {
 
-            status.textContent =
-              "Thank you! Your quote request has been sent successfully.";
+    //         status.textContent =
+    //           "Thank you! Your quote request has been sent successfully.";
 
-            status.classList.add("success");
+    //         status.classList.add("success");
 
-            form.reset();
+    //         form.reset();
 
-          } else {
+    //       } else {
 
-            throw new Error(result);
+    //         throw new Error(result);
 
-          }
+    //       }
 
-        } catch (error) {
+    //     } catch (error) {
 
-          status.textContent =
-            "Sorry, something went wrong. Please try again or contact us directly.";
+    //       status.textContent =
+    //         "Sorry, something went wrong. Please try again or contact us directly.";
 
-          status.classList.add("error");
+    //       status.classList.add("error");
 
-        } finally {
+    //     } finally {
 
-          button.disabled = false;
-          button.innerHTML = originalText;
+    //       button.disabled = false;
+    //       button.innerHTML = originalText;
 
-        }
+    //     }
 
-      });
+    //   });
 
-    });
+    // });
   </script>
 
 </body>
